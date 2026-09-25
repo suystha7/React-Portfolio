@@ -1,41 +1,35 @@
 {
-  "name": "react-portfolio",
+  "name": "portfolio-spa",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "description": "SEO-friendly single-page developer portfolio built with Next.js, Tailwind CSS, Framer Motion and shadcn-style components.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@babel/core": "^7.29.7",
-    "@tsparticles/engine": "^3.8.1",
-    "@tsparticles/react": "^3.0.0",
-    "@tsparticles/slim": "^3.9.1",
-    "boxicons": "^2.1.4",
-    "core-js": "^3.49.0",
-    "framer-motion": "^10.18.0",
-    "react": "^18.3.1",
-    "react-custom-cursor": "^0.1.1",
-    "react-custom-scrollbars-2": "^4.5.0",
-    "react-dom": "^18.3.1",
-    "react-icons": "^4.12.0",
-    "react-scroll": "^1.9.3",
-    "react-type-animation": "^3.2.0"
+    "@radix-ui/react-slot": "^1.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "framer-motion": "^11.0.0",
+    "gsap": "^3.15.0",
+    "lucide-react": "^0.440.0",
+    "next": "^14.2.0",
+    "next-themes": "^0.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tailwind-merge": "^2.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.31",
-    "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4.7.0",
-    "autoprefixer": "^10.5.2",
-    "eslint": "^8.57.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.26",
-    "postcss": "^8.5.19",
-    "tailwindcss": "^3.4.19",
-    "vite": "^5.4.21"
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.0.0"
   }
 }

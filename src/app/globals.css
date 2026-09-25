@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- shadcn-style design tokens (light) ---------- */
+:root {
+  color-scheme: light;
+  --background: 0 0% 100%;
+  /* All text is simple black in light mode… */
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  /* …brand blue / orange live only on non-text accents. */
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 25 95% 53%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 38%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 217 91% 60%;
+  --radius: 0.75rem;
+}
+
+/* ---------- dark mode: all text becomes white ---------- */
+.dark {
+  color-scheme: dark;
+  --background: 0 0% 4%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 25 95% 53%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 72%;
+  --accent: 0 0% 14%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62.8% 50.6%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 16%;
+  --input: 0 0% 16%;
+  --ring: 217 91% 60%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  ::selection {
+    @apply bg-secondary text-white;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gradient-to-b from-primary to-secondary;
+  }
+}
+
+@layer components {
+  /* Subtle blueprint grid backdrop */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(100 116 139 / 0.14) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(100 116 139 / 0.14) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  /* Frosted-glass surface */
+  .glass {
+    @apply border border-black/10 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06];
+  }
+
+  /* Form controls */
+  .form-input {
+    @apply flex h-11 w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .form-textarea {
+    @apply flex min-h-[140px] w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Tech marquee: pause the scroll when hovered */
+  .marquee:hover .marquee-inner {
+    animation-play-state: paused;
+  }
+
+  /* Blinking caret for the typewriter */
+  .cursor-blink {
+    animation: blink 1s step-end infinite;
+    font-weight: 300;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
