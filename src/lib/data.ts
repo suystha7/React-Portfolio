@@ -18,29 +18,24 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-/* =====================================================================
-   ★ EDIT THIS FILE to make the portfolio yours — everything reads from here.
-   ===================================================================== */
-
 export const siteConfig = {
-  name: "Your Name", // TODO: e.g. "Aarav Sharma"
-  firstName: "Your",
-  lastName: "Name",
-  initials: "YN",
-  role: "Frontend Developer",
+  name: "Suyog Shrestha", 
+  firstName: "Suyog",
+  lastName: "Shrestha",
+  initials: "SS",
+  role: "Sofware Engineer",
   tagline:
     "I build fast, SEO-friendly and delightful web experiences with React, Next.js and Tailwind CSS.",
-  location: "Kathmandu, Nepal",
-  email: "you@example.com", // TODO: your email
-  phone: "+977-98XXXXXXXX", // TODO: your phone
-  github: "https://github.com/yourusername", // TODO
-  linkedin: "https://linkedin.com/in/yourusername", // TODO
-  twitter: "https://x.com/yourusername", // TODO (optional)
-  resume: "/resume.pdf", // file in /public — replace with your real CV
-  url: "https://yourportfolio.com", // TODO: your live domain (for SEO)
+  location: "Hattigaunda-07, Buddhanilkantha, Kathmandu",
+  email: "suyogstha317@gmail.com", 
+  phone: "+977-9767240882", 
+  github: "https://github.com/yourusername", 
+  linkedin: "https://linkedin.com/in/yourusername", 
+  twitter: "https://x.com/yourusername", 
+  resume: "/resume.pdf", 
+  url: "https://suyogstha.com.np",
   availability: "Available for freelance & full-time roles",
-  // Leave "" to use the animated initials avatar, or add "/profile.jpg" to /public:
-  profileImage: "",
+  profileImage: "/profile.jpg",
 };
 
 export const navLinks = [
@@ -52,12 +47,10 @@ export const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
-/** Words typed by the animated cursor text in the hero. */
 export const typewriterWords = [
-  "Frontend Developer",
+  "Software Engineer",
   "React Specialist",
   "Next.js Developer",
-  "UI Animation Lover",
 ];
 
 export interface Stat {

@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import {
   ArrowRight,
-  Atom,
-  Briefcase,
   ChevronDown,
   Download,
   Github,
@@ -22,14 +19,143 @@ import Typewriter from "@/components/shared/Typewriter";
 import SplitText from "@/components/shared/SplitText";
 import Magnetic from "@/components/shared/Magnetic";
 import Parallax from "@/components/shared/Parallax";
+import TechOrbitShowcase from "./TechOrbitShowcase";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const glowARef = useRef<HTMLDivElement>(null);
   const glowBRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  /* GSAP mouse parallax — visual + orbs drift with the cursor at different depths. */
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    const particles: {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+    }[] = [];
+    const particleCount = Math.floor((width * height) / 18000);
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        radius: Math.random() * 1.5 + 1.2,
+      });
+    }
+
+    const mouse = { x: -1000, y: -1000, radius: 140 };
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const handleMouseLeave = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    };
+
+    const section = sectionRef.current;
+    if (section) {
+      section.addEventListener("mousemove", handleMouseMove);
+      section.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.classList.contains("dark");
+
+      const dotColor = isDark
+        ? "rgba(245, 158, 11, 0.4)"
+        : "rgba(217, 119, 6, 0.35)";
+      const lineColor = isDark
+        ? "rgba(245, 158, 11, 0.12)"
+        : "rgba(217, 119, 6, 0.1)";
+      const mouseLineColor = isDark
+        ? "rgba(245, 158, 11, 0.25)"
+        : "rgba(217, 119, 6, 0.2)";
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 110) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < mouse.radius) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = mouseLineColor;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (section) {
+        section.removeEventListener("mousemove", handleMouseMove);
+        section.removeEventListener("mouseleave", handleMouseLeave);
+      }
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  // Parallax movement for section background glows
   useEffect(() => {
     const section = sectionRef.current;
     const visual = visualRef.current;
@@ -55,6 +181,7 @@ export default function Hero() {
       bx(nx * 60);
       by(ny * 60);
     };
+
     const onLeave = () => {
       vx(0);
       vy(0);
@@ -66,6 +193,7 @@ export default function Hero() {
 
     section.addEventListener("mousemove", onMove);
     section.addEventListener("mouseleave", onLeave);
+
     return () => {
       section.removeEventListener("mousemove", onMove);
       section.removeEventListener("mouseleave", onLeave);
@@ -78,27 +206,35 @@ export default function Hero() {
       id="home"
       className="relative overflow-hidden pb-16 pt-32 md:pt-40"
     >
-      {/* Backdrop: grid + parallax glowing orbs */}
-      <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_35%,black,transparent)]" />
-      <Parallax distance={30} className="pointer-events-none absolute -left-24 top-24">
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none absolute inset-0 h-full w-full z-0 opacity-80"
+      />
+
+      <Parallax
+        distance={30}
+        className="pointer-events-none absolute -left-24 top-24 z-0"
+      >
         <div ref={glowARef}>
-          <div className="h-72 w-72 animate-blob rounded-full bg-primary/20 blur-3xl" />
+          <div className="h-72 w-72 animate-blob rounded-full bg-amber-500/10 blur-3xl" />
         </div>
       </Parallax>
-      <Parallax distance={-36} className="pointer-events-none absolute -right-24 top-64">
+      <Parallax
+        distance={-36}
+        className="pointer-events-none absolute -right-24 top-64 z-0"
+      >
         <div ref={glowBRef}>
-          <div className="h-72 w-72 animate-blob rounded-full bg-secondary/20 blur-3xl [animation-delay:2s]" />
+          <div className="h-72 w-72 animate-blob rounded-full bg-amber-500/10 blur-3xl [animation-delay:2s]" />
         </div>
       </Parallax>
 
-      <div className="container relative grid items-center gap-14 lg:grid-cols-2">
-        {/* ------------ Left: copy ------------ */}
+      <div className="container relative grid items-center gap-14 lg:grid-cols-2 z-10">
         <motion.div variants={staggerParent} initial="hidden" animate="show">
           <motion.div variants={fadeUpChild}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
               </span>
               {siteConfig.availability}
             </span>
@@ -112,7 +248,7 @@ export default function Hero() {
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="inline-block h-[2px] w-10 origin-left rounded-full bg-gradient-to-r from-primary to-secondary"
+              className="inline-block h-[2px] w-10 origin-left rounded-full bg-amber-500"
             />
             Hello, I&apos;m
           </motion.p>
@@ -143,14 +279,21 @@ export default function Hero() {
             variants={fadeUpChild}
             className="mt-4 flex items-center gap-2 text-sm text-muted-foreground"
           >
-            <MapPin className="h-4 w-4 text-secondary" />
+            <MapPin className="h-4 w-4 text-amber-500" />
             {siteConfig.location}
           </motion.div>
 
-          {/* CTAs */}
-          <motion.div variants={fadeUpChild} className="mt-8 flex flex-wrap items-center gap-3">
+          <motion.div
+            variants={fadeUpChild}
+            className="mt-8 flex flex-wrap items-center gap-3"
+          >
             <Magnetic>
-              <Button asChild size="lg" variant="gradient">
+              <Button
+                asChild
+                size="lg"
+                variant="default"
+                className="rounded-xl font-medium bg-amber-500 text-black hover:bg-amber-600"
+              >
                 <a href={siteConfig.resume} download="My-Resume.pdf">
                   <Download />
                   Download CV
@@ -158,7 +301,12 @@ export default function Hero() {
               </Button>
             </Magnetic>
             <Magnetic>
-              <Button asChild size="lg" variant="outline">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="rounded-xl font-medium border-amber-500/40 hover:bg-amber-500/10"
+              >
                 <Link href="#projects">
                   View My Work
                   <ArrowRight />
@@ -166,16 +314,42 @@ export default function Hero() {
               </Button>
             </Magnetic>
             <div className="flex gap-2">
-              <motion.span whileHover={{ scale: 1.12, rotate: -6 }} whileTap={{ scale: 0.92 }}>
-                <Button asChild size="icon" variant="ghost" className="h-12 w-12 rounded-xl border">
-                  <a href={siteConfig.github} target="_blank" rel="noreferrer" aria-label="GitHub profile">
+              <motion.span
+                whileHover={{ scale: 1.12, rotate: -6 }}
+                whileTap={{ scale: 0.92 }}
+              >
+                <Button
+                  asChild
+                  size="icon"
+                  variant="ghost"
+                  className="h-12 w-12 rounded-xl border border-border"
+                >
+                  <a
+                    href={siteConfig.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="GitHub profile"
+                  >
                     <Github className="h-5 w-5" />
                   </a>
                 </Button>
               </motion.span>
-              <motion.span whileHover={{ scale: 1.12, rotate: 6 }} whileTap={{ scale: 0.92 }}>
-                <Button asChild size="icon" variant="ghost" className="h-12 w-12 rounded-xl border">
-                  <a href={siteConfig.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn profile">
+              <motion.span
+                whileHover={{ scale: 1.12, rotate: 6 }}
+                whileTap={{ scale: 0.92 }}
+              >
+                <Button
+                  asChild
+                  size="icon"
+                  variant="ghost"
+                  className="h-12 w-12 rounded-xl border border-border"
+                >
+                  <a
+                    href={siteConfig.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="LinkedIn profile"
+                  >
                     <Linkedin className="h-5 w-5" />
                   </a>
                 </Button>
@@ -184,123 +358,23 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ------------ Right: animated profile ------------ */}
         <div ref={visualRef}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, rotate: -4 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, type: "spring", stiffness: 80, damping: 16 }}
-            className="relative mx-auto h-[320px] w-[320px] md:h-[420px] md:w-[420px]"
-          >
-            {/* Counter-rotating dashed orbit */}
-            <div className="absolute -inset-6 animate-spin-slow rounded-full border-2 border-dashed border-foreground/10 [animation-direction:reverse]" />
-
-            {/* Spinning conic ring */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 rounded-full p-[3px]"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, #2563EB, #F97316, #7C3AED, #2563EB)",
-              }}
-            >
-              <div className="h-full w-full rounded-full bg-background" />
-            </motion.div>
-
-            {/* Floating photo / avatar */}
-            <motion.div
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              whileHover={{ scale: 1.03 }}
-              className="absolute inset-4 overflow-hidden rounded-full border-4 border-background bg-gradient-to-br from-primary via-blue-500 to-secondary shadow-2xl shadow-primary/30"
-            >
-              {siteConfig.profileImage ? (
-                <Image
-                  src={siteConfig.profileImage}
-                  alt={`${siteConfig.name} — ${siteConfig.role}`}
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              ) : (
-                /* Default animated initials avatar — set profileImage in data.ts to use a photo */
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-white">
-                  <span className="font-display text-7xl font-extrabold tracking-tight drop-shadow-lg md:text-8xl">
-                    {siteConfig.initials}
-                  </span>
-                  <span className="rounded-full bg-black/25 px-4 py-1 text-xs font-medium tracking-widest backdrop-blur">
-                    {siteConfig.role.toUpperCase()}
-                  </span>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Floating tech chips */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.9, type: "spring", stiffness: 200, damping: 14 }}
-              className="absolute -right-2 top-8 md:-right-6"
-            >
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                className="glass flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold text-foreground shadow-lg"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Atom className="h-4 w-4" />
-                </span>
-                React
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.05, type: "spring", stiffness: 200, damping: 14 }}
-              className="absolute -left-2 top-1/2 md:-left-8"
-            >
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-                className="glass flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold text-foreground shadow-lg"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                  <Briefcase className="h-4 w-4" />
-                </span>
-                3+ Years
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2, type: "spring", stiffness: 200, damping: 14 }}
-              className="absolute -bottom-2 right-10"
-            >
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut", delay: 1.8 }}
-                className="glass rounded-2xl px-4 py-2 text-xs font-semibold text-foreground shadow-lg"
-              >
-                ⚡ Next.js Expert
-              </motion.div>
-            </motion.div>
-          </motion.div>
+          <TechOrbitShowcase />
         </div>
       </div>
 
-      {/* Scroll cue */}
       <motion.a
         href="#about"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="mt-16 flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+        className="mt-16 flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground relative z-10"
       >
         Scroll to explore
-        <motion.span animate={{ y: [0, 8, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
+        <motion.span
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity }}
+        >
           <ChevronDown className="h-5 w-5" />
         </motion.span>
       </motion.a>
