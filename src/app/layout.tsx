@@ -21,47 +21,87 @@ const display = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — ${siteConfig.role} (React & Next.js)`,
+    default: `${siteConfig.name} — ${siteConfig.role} | React & Next.js Portfolio`,
     template: `%s | ${siteConfig.name}`,
   },
-  description: siteConfig.tagline,
+  description: `${siteConfig.tagline} Specializing in modern web development with React, Next.js, TypeScript, and Tailwind CSS. View my portfolio and projects.`,
   keywords: [
     siteConfig.name,
     "Frontend Developer",
     "React Developer",
     "Next.js Developer",
+    "Full Stack Developer",
     "Web Developer Nepal",
-    "Portfolio",
-    "JavaScript",
-    "TypeScript",
+    "Software Engineer",
+    "TypeScript Developer",
+    "JavaScript Developer",
+    "Portfolio Website",
+    "React Portfolio",
+    "Next.js Portfolio",
     "Tailwind CSS",
     "Framer Motion",
+    "UI/UX Developer",
+    "Responsive Web Design",
+    "SEO Optimized",
+    "Web Performance",
+    "Modern Web Development",
+    "Kathmandu Developer",
+    "Nepal Software Developer",
   ],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
+  publisher: siteConfig.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
     siteName: `${siteConfig.name} — Portfolio`,
     title: `${siteConfig.name} — ${siteConfig.role}`,
-    description: siteConfig.tagline,
+    description: `${siteConfig.tagline} Professional portfolio showcasing modern web development projects.`,
+    images: [
+      {
+        url: `${siteConfig.url}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} — Portfolio`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.role}`,
     description: siteConfig.tagline,
+    creator: "@yourusername",
+    images: [`${siteConfig.url}/og-image.png`],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
       "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  alternates: { canonical: siteConfig.url },
+  alternates: { 
+    canonical: siteConfig.url,
+  },
+  category: "Technology",
+  verification: {
+    // Add these after setting up Google Search Console
+    // google: 'your-google-verification-code',
+    // yandex: 'your-yandex-verification-code',
+    // bing: 'your-bing-verification-code',
+  },
 };
 
 export const viewport: Viewport = {
@@ -73,20 +113,48 @@ export const viewport: Viewport = {
   ],
 };
 
-/* JSON-LD structured data helps Google understand this is a person page. */
+/* Enhanced JSON-LD structured data for better SEO */
 const personSchema = {
   "@context": "https://schema.org",
-  "@type": "Person",
+  "@type": ["Person", "WebSite"],
+  "@id": siteConfig.url,
   name: siteConfig.name,
+  alternateName: `${siteConfig.firstName} ${siteConfig.lastName}`,
   jobTitle: siteConfig.role,
+  description: siteConfig.tagline,
   url: siteConfig.url,
+  email: siteConfig.email,
+  telephone: siteConfig.phone,
+  image: `${siteConfig.url}${siteConfig.profileImage}`,
   address: {
     "@type": "PostalAddress",
-    addressLocality: siteConfig.location,
+    addressLocality: "Kathmandu",
+    addressRegion: "Bagmati",
+    addressCountry: "NP",
   },
+  alumniOf: {
+    "@type": "Organization",
+    name: "Tribhuvan University",
+  },
+  knowsAbout: [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "JavaScript",
+    "Tailwind CSS",
+    "Frontend Development",
+    "Web Development",
+    "UI/UX Design",
+    "SEO",
+    "Performance Optimization",
+  ],
   sameAs: [siteConfig.github, siteConfig.linkedin, siteConfig.twitter].filter(
     (u) => u && !u.includes("yourusername")
   ),
+  worksFor: {
+    "@type": "Organization",
+    name: "Freelance",
+  },
 };
 
 export default function RootLayout({
