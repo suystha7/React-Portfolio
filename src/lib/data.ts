@@ -51,6 +51,7 @@ export const typewriterWords = [
   "Software Engineer",
   "React Specialist",
   "Next.js Developer",
+  "Full Stack Developer",
 ];
 
 export interface Stat {

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { siteConfig } from "@/lib/data";
+import PageLoader from "@/components/shared/PageLoader";
 import "./globals.css";
 
 const inter = Inter({
@@ -98,6 +99,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${display.variable} font-sans antialiased`}
       >
+        <PageLoader />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

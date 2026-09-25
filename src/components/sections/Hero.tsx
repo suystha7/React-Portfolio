@@ -292,7 +292,7 @@ export default function Hero() {
                 asChild
                 size="lg"
                 variant="default"
-                className="rounded-xl font-medium bg-amber-500 text-black hover:bg-amber-600"
+                className="rounded-xl font-medium bg-amber-500 text-white hover:bg-amber-600"
               >
                 <a href={siteConfig.resume} download="My-Resume.pdf">
                   <Download />
